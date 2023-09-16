@@ -1,0 +1,12 @@
+{
+  "listen": "",
+  "domain": "",
+  "port": 8080,
+  "certFile": "",
+  "keyFile": "",
+  "basePath": "/api",
+  "timeLocation": "Asia/Tehran",
+  "dbType": "mysql",
+  "dbAddr": "root:@tcp",
+  "trafficDays": 30
+}

@@ -1,0 +1,104 @@
+---
+version: "3.9"
+
+services:
+  rahaXray:
+    image: ghcr.io/raha-project/raha-xray
+    container_name: rahaXray
+    volumes:
+      - "xrayCore:/app/xray-core"
+      - "logs:/var/log"
+      - "$PWD/raha-xray.json:/app/raha-xray.json"
+      - "$PWD/cert:/app/cert"
+    environment:
+      RAHA_XRAY_API: "xray:62789"
+    tty: true
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    networks:
+      - raha-network
+    logging:
+      driver: syslog
+      options:
+        tag: "raha-xray"
+        syslog-address: "udp://127.0.0.1:1514"
+    entrypoint: "./rahaXray"
+    depends_on:
+      - db
+      - xray
+
+  xray:
+    image: alpine
+    container_name: xray
+    volumes:
+      - "xrayCore:/app/xray-core"
+      - "$PWD/xray.sh:/app/xray.sh"
+      - "$PWD/cert:/app/cert"
+    networks:
+      - raha-network
+    ports:
+      - "127.0.0.1:62789:62789"
+      - "443:443"
+      - "1443:1443"
+      - "2443:2443"
+      - "3443:3443"
+    environment:
+      XRAY_VMESS_AEAD_FORCED: "false"
+    restart: unless-stopped
+    logging:
+      driver: syslog
+      options:
+        tag: "xray"
+        syslog-address: "udp://127.0.0.1:1514"
+    working_dir: "/app"
+    command: "apk add --update ca-certificates tzdata wget unzip"
+    entrypoint: ["sh", "xray.sh"]
+    depends_on:
+      - db
+
+  db:
+    image: mariadb
+    container_name: db
+    volumes:
+      - "$PWD/db:/var/lib/mysql"
+    networks:
+      - raha-network
+    ports:
+      - "127.0.0.1:3306:3306"
+    environment:
+      MARIADB_DATABASE: "raha-xray"
+      MARIADB_ROOT_PASSWORD: "rahaXray"
+    restart: unless-stopped
+    logging:
+      driver: syslog
+      options:
+        tag: "mysql"
+        syslog-address: "udp://127.0.0.1:1514"
+    depends_on:
+      - syslog
+
+  syslog:
+    image: alpine
+    container_name: syslog
+    volumes:
+      - "logs:/logs"
+      - "$PWD/rsyslog.conf:/root/rsyslog.conf"
+    networks:
+      - raha-network
+    ports:
+      - "127.0.0.1:1514:1514/udp"
+    restart: unless-stopped
+    entrypoint: |-
+      sh -c '
+        apk add --update rsyslog
+        rsyslogd -n -f /root/rsyslog.conf
+      '
+
+networks:
+  raha-network:
+    driver: bridge
+
+volumes:
+  logs:
+  xrayCore:

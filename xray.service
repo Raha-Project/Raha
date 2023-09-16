@@ -1,0 +1,14 @@
+[Unit]
+Description=Xray Service
+After=network.target
+Wants=network.target
+
+[Service]
+Environment="XRAY_VMESS_AEAD_FORCED=false"
+Type=simple
+WorkingDirectory=/usr/local/raha-xray
+ExecStart=/usr/local/raha-xray/xray.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

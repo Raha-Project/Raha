@@ -1,0 +1,10 @@
+.git
+.idea
+.vscode
+.cache
+.sync*
+*.tar.gz
+/*.json
+*/cert/
+*/db/
+/xray-core/

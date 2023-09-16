@@ -1,0 +1,13 @@
+[Unit]
+Description=Raha-xray Service
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/usr/local/raha-xray/
+ExecStart=/usr/local/raha-xray/rahaXray
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
