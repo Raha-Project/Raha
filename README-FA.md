@@ -35,5 +35,5 @@ bash <(curl -Ls https://raw.githubusercontent.com/Raha-Project/Raha/master/linux
 #### 3. نصب `raha-xray` + `MySQL` توسط داکر (برای تست توصیه میشود)
 
 ```sh
-bash <(curl -Ls https://raw.githubusercontent.com/Raha-Project/Raha/master/dockerMySQL/install.sh)
+bash <(curl -Ls https://raw.githubusercontent.com/Raha-Project/Raha/master/dockerMysql/install.sh)
 ```
