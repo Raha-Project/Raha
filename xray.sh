@@ -2,7 +2,7 @@
 
 set -e
 
-defaultXrayVersion="v1.8.4"
+defaultXrayVersion="v1.8.6"
 
 if [[ arch == "arm64" ]]; then
     ARCH="arm64-v8a"
